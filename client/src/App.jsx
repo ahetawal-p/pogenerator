@@ -1,167 +1,52 @@
-import React, { Component } from 'react'
-import MaterialTable from 'material-table'
-import moment from 'moment';
-import { CircularProgress } from '@material-ui/core'
-import PictureAsPdfIcon from '@material-ui/icons/PictureAsPdf'
-import getDocDefinition from './pdf/pdfdef'
-import { workTypes, currencyTypes, editableFields, readableFields, allColumns } from './utils/columnData'
-import pdfMake from "pdfmake/build/pdfmake"
-import pdfFonts from "pdfmake/build/vfs_fonts"
-import FilterView from './views/FilterView'
-import { getPOData } from './service/getPOData'
+/* eslint-disable react/prop-types */
+import React, { Component } from 'react';
+import { Router, Route } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { history } from './helpers';
+import POGridView from './views/POGridView';
+import { RegisterView } from './components/Register';
+import { LoginView } from './components/Login';
+import PrivateRoute from './utils/PrivateRoute';
+import * as alertActions from './actions/AlertAction';
 
-pdfMake.vfs = pdfFonts.pdfMake.vfs;
-
-const wait = ms => new Promise(r => setTimeout(r, ms));
-const allFields = [...editableFields, ...readableFields];
-const today = moment();
-
+// eslint-disable-next-line react/prefer-stateless-function
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      data: undefined,
-      yearValue: today.year(),
-      monthValue: today.month(),
-      isLoading: true
 
-    }
-  }
-
-  async componentDidMount() {
-    const data = await getPOData(today.year(), today.month() + 1);
-    this.setState({
-      data,
-      isLoading: false
-    })
-  }
-
-
-  addNewEntry = async (newData) => {
-    const inValids = [];
-    editableFields.forEach((item) => {
-      if (!newData[item]) {
-        inValids.push(item);
-      }
-    })
-    if (inValids.length > 0) {
-      alert("Missing fields: \n" + inValids.join('\n'))
-      throw new Error('Missing fields')
-    }
-    await wait(1000);
-    const data = this.state.data;
-    data.push(newData);
-    this.setState({ data });
-  }
-
-  editEntry = async (newData, oldData) => {
-    await wait(1000);
-    const data = this.state.data;
-    const index = data.indexOf(oldData);
-    data[index] = newData;
-    this.setState({ data })
-  }
-
-  deleteEntry = async (oldData) => {
-    await wait(1000);
-    let data = this.state.data;
-    const index = data.indexOf(oldData);
-    data.splice(index, 1);
-    this.setState({ data })
-  }
-
-  generatePOPDF = (event, rowData) => {
-    const templateData = {};
-    allFields.forEach((item) => {
-      let currentData = rowData[item];
-      if (item === 'workType') {
-        currentData = workTypes[currentData];
-      }
-      if (item === 'currency') {
-        currentData = currencyTypes[currentData];
-      }
-      templateData[item] = currentData;
-    })
-    pdfMake.createPdf(getDocDefinition(templateData)).download();
-  }
-
-  onLookup = async (year, month) => {
-    console.log(month);
-    this.setState({
-      isLoading: true,
-      yearValue: year,
-      monthValue: month
-    })
-    const data = await getPOData(year, month + 1);
-    this.setState({
-      data,
-      isLoading: false
-    })
+    const { dispatch } = this.props;
+    history.listen((location, action) => {
+      // clear alert on location change
+      dispatch(alertActions.clear());
+    });
   }
 
   render() {
-    const { isLoading, yearValue, monthValue } = this.state
+    const { alert } = this.props;
     return (
-      <div style={{
-        height: '100vh'
-      }} >
-        {
-          isLoading
-            ?
-            (
-              <div style={{
-                display: 'flex',
-                height: '100%', justifyContent: 'center', alignItems: 'center'
-              }} >
-                <CircularProgress />
-              </div >
-            )
-            :
-            (
-              <div>
-                <FilterView
-                  year={yearValue}
-                  month={monthValue}
-                  onLookup={this.onLookup}
-
-                />
-                <MaterialTable
-                  title="PO Entry"
-                  columns={allColumns}
-                  style={{ marginBottom: 10 }}
-                  data={this.state.data}
-                  actions={[
-                    {
-                      icon: PictureAsPdfIcon,
-                      tooltip: 'Generate PO PDF',
-                      // isFreeAction:true,
-                      onClick: this.generatePOPDF
-                    },
-                  ]}
-                  options={{
-                    paging: false,
-                    search: false,
-                    exportButton: true,
-                    addRowPosition: 'first',
-                    headerStyle: {
-                      padding: 10,
-                      whiteSpace: 'nowrap',
-                      backgroundColor: '#039be5'
-                    }
-                  }}
-                  editable={{
-                    onRowAdd: this.addNewEntry,
-                    onRowUpdate: this.editEntry,
-                    onRowDelete: this.deleteEntry
-                  }}
-                />
-              </div>
-
-            )
-        }
+      <div className="jumbotron" style={{ marginBottom: 0 }}>
+        <div>
+          {alert.message && (
+            <div className={`alert ${alert.type}`}>{alert.message}</div>
+          )}
+          <Router history={history}>
+            <div>
+              <Route exact path="/" component={POGridView} />
+              <Route path="/register" component={RegisterView} />
+              <Route path="/login" component={LoginView} />
+            </div>
+          </Router>
+        </div>
       </div>
-    )
+    );
   }
 }
 
-export default App;
+function mapStateToProps(state) {
+  const { alert } = state;
+  return {
+    alert
+  };
+}
+
+export default connect(mapStateToProps)(App);
