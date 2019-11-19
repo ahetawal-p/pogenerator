@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import MaterialTable from 'material-table';
-import moment from 'moment';
+import * as moment from 'moment';
 import { connect } from 'react-redux';
-import { CircularProgress } from '@material-ui/core';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import PictureAsPdfIcon from '@material-ui/icons/PictureAsPdf';
 import getDocDefinition from '../pdf/pdfdef';
 import {

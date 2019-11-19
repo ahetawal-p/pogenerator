@@ -24,10 +24,7 @@ export default class App {
   }
 
   initialize() {
-    mongoose.connect(
-      this.db,
-      { useNewUrlParser: true, useCreateIndex: true }
-    );
+    mongoose.connect(this.db, { useNewUrlParser: true, useCreateIndex: true });
     mongoose.connection.on('error', error => console.log(error));
     mongoose.set('debug', true);
 
@@ -56,11 +53,11 @@ export default class App {
 
   configureRoutes() {
     const expressApp = this.express;
-    
+
     expressApp.use('/event', eventRouter);
     expressApp.use('/user', usersRouter);
     const staticFiles = express.static(
-       path.join(__dirname, '../../client/build')
+      path.join(__dirname, '../../client/build')
     );
     expressApp.use('/*', staticFiles);
     // catch 404 and forward to error handler
