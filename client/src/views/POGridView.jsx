@@ -9,13 +9,15 @@ import {
   currencyTypes,
   editableFields,
   readableFields,
-  allColumns
+  getAllColumns
 } from '../utils/columnData';
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
 import FilterView from './FilterView';
 import { getPOData } from '../service/getPOData';
 import * as poActions from '../actions/POAction';
+import * as userActions from '../actions/UserAction';
+import localizeImage from '../pdf/localizeImage';
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
@@ -100,9 +102,15 @@ class POGridView extends Component {
     });
   };
 
+  onLogout = () => {
+    const { dispatch } = this.props;
+    dispatch(userActions.logout());
+  };
+
   render() {
     const { yearValue, monthValue } = this.state;
-    const { allPOs, allPOsLoading } = this.props;
+    const { allPOs, allPOsLoading, isAdmin } = this.props;
+    const allColumns = getAllColumns(isAdmin);
     return (
       <div
         style={{
@@ -123,13 +131,29 @@ class POGridView extends Component {
           </div>
         ) : (
           <div>
+            <div className="row">
+              <div className="col">
+                <img src={`${localizeImage}`} width={100} alt={'Logo'} />
+                <h4>Localize PO Entry</h4>
+              </div>
+              <div className="col">
+                <div className="float-right">
+                  <button
+                    type="button"
+                    className="btn btn-link"
+                    onClick={this.onLogout}
+                  >
+                    Logout
+                  </button>
+                </div>
+              </div>
+            </div>
             <FilterView
               year={yearValue}
               month={monthValue}
               onLookup={this.onLookup}
             />
             <MaterialTable
-              title="PO Entry"
               columns={allColumns}
               style={{ marginBottom: 10 }}
               data={allPOs}
@@ -144,7 +168,8 @@ class POGridView extends Component {
               options={{
                 paging: false,
                 search: false,
-                exportButton: true,
+                showTitle: false,
+                exportButton: isAdmin ? true : false,
                 addRowPosition: 'first',
                 headerStyle: {
                   padding: 10,
@@ -154,8 +179,8 @@ class POGridView extends Component {
               }}
               editable={{
                 onRowAdd: this.addNewEntry,
-                onRowUpdate: this.editEntry,
-                onRowDelete: this.deleteEntry
+                onRowUpdate: isAdmin ? this.editEntry : undefined,
+                onRowDelete: isAdmin ? this.deleteEntry : undefined
               }}
             />
           </div>
@@ -167,9 +192,11 @@ class POGridView extends Component {
 
 function mapStateToProps(state) {
   const { allPOsLoading, allPOs } = state.po;
+  const { isAdmin } = state.user;
   return {
     allPOsLoading,
-    allPOs
+    allPOs,
+    isAdmin
   };
 }
 export default connect(mapStateToProps)(POGridView);
