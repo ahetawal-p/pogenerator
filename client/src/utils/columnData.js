@@ -58,6 +58,7 @@ export const allColumns = [
         name="txtDescEd"
         cols="25"
         rows="4"
+        value={props.value}
         onChange={e => props.onChange(e.target.value)}
       />
     )
@@ -74,6 +75,7 @@ export const allColumns = [
         name="txtDescEd"
         cols="20"
         rows="2"
+        value={props.value}
         onChange={e => props.onChange(e.target.value)}
       />
     )
