@@ -31,7 +31,7 @@ class App extends Component {
           )}
           <Router history={history}>
             <div>
-              <Route exact path="/" component={POGridView} />
+              <PrivateRoute exact path="/" component={POGridView} />
               <Route path="/register" component={RegisterView} />
               <Route path="/login" component={LoginView} />
             </div>

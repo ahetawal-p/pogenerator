@@ -1,5 +1,7 @@
 import handleResponse, { objToQueryString } from '../utils/ServiceUtil';
 import { authHeader } from '../helpers';
+// eslint-disable-next-line
+import { sampleData } from '../utils/sampleData';
 
 export function createPO(poEntry) {
   const requestOptions = {
@@ -18,4 +20,5 @@ export function getAllPos(paginateParams) {
   };
   const queryString = objToQueryString(paginateParams);
   return fetch(`/po${queryString}`, requestOptions).then(handleResponse);
+  // return Promise.resolve({ allPOs: sampleData });
 }

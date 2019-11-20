@@ -2,36 +2,33 @@ import * as type from '../actions/POTypes';
 import { LOGOUT } from '../actions/UserActionTypes';
 
 const initialState = {
-  eventCount: 0,
-  creatingEvent: false,
-  allEvents: {},
-  allEventsLoading: false,
-  editEvent: undefined
+  allPOs: {},
+  allPOsLoading: true,
+  creatingPO: false
 };
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case type.CREATE_UPDATE_REQUEST:
-      return { ...state, creatingEvent: true };
+      return { ...state, creatingPO: true };
     case type.CREATE_UPDATE_SUCCESS:
       return {
         ...state,
-        creatingEvent: false,
-        eventCount: action.response.eventCount,
-        editEvent: undefined
+        creatingPO: false,
+        allPOs: action.response.allPOs
       };
     case type.CREATE_UPDATE_FAILURE:
       return {};
     case type.ALL_POS_REQUEST:
-      return { ...state, allEventsLoading: true };
+      return { ...state, allPOsLoading: true };
     case type.ALL_POS_SUCCESS:
       return {
         ...state,
-        allEvents: action.response.allEvents,
-        allEventsLoading: false
+        allPOs: action.response.allPOs,
+        allPOsLoading: false
       };
     case type.ALL_POS_FAILURE:
-      return { ...state, allEventsLoading: false };
+      return { ...state, allPOsLoading: false };
     case LOGOUT:
       return initialState;
     default:

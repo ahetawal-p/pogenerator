@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import MaterialTable from 'material-table';
-import * as moment from 'moment';
 import { connect } from 'react-redux';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import PictureAsPdfIcon from '@material-ui/icons/PictureAsPdf';
@@ -22,28 +21,24 @@ pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 const wait = ms => new Promise(r => setTimeout(r, ms));
 const allFields = [...editableFields, ...readableFields];
-const today = moment();
+const today = new Date();
 
 class POGridView extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: undefined,
-      yearValue: today.year(),
-      monthValue: today.month(),
-      isLoading: true
+      yearValue: today.getFullYear(),
+      monthValue: today.getMonth()
     };
   }
 
-  async componentDidMount() {
-    const data = await getPOData(today.year(), today.month() + 1);
-    this.setState({
-      data,
-      isLoading: false
-    });
+  componentDidMount() {
+    const { yearValue, monthValue } = this.state;
+    const { dispatch } = this.props;
+    dispatch(poActions.getAllPOs({ year: yearValue, month: monthValue + 1 }));
   }
 
-  addNewEntry = async newData => {
+  createOrUpdatePO = newData => {
     const inValids = [];
     editableFields.forEach(item => {
       if (!newData[item]) {
@@ -54,18 +49,19 @@ class POGridView extends Component {
       alert('Missing fields: \n' + inValids.join('\n'));
       throw new Error('Missing fields');
     }
-    await wait(1000);
-    const data = this.state.data;
-    data.push(newData);
-    this.setState({ data });
+    const { yearValue, monthValue } = this.state;
+    const { dispatch } = this.props;
+    newData['year'] = yearValue;
+    newData['month'] = monthValue + 1;
+    dispatch(poActions.createPO(newData));
+  };
+
+  addNewEntry = newData => {
+    this.createOrUpdatePO(newData);
   };
 
   editEntry = async (newData, oldData) => {
-    await wait(1000);
-    const data = this.state.data;
-    const index = data.indexOf(oldData);
-    data[index] = newData;
-    this.setState({ data });
+    this.createOrUpdatePO(newData);
   };
 
   deleteEntry = async oldData => {
@@ -92,7 +88,6 @@ class POGridView extends Component {
   };
 
   onLookup = async (year, month) => {
-    console.log(month);
     this.setState({
       isLoading: true,
       yearValue: year,
@@ -106,7 +101,8 @@ class POGridView extends Component {
   };
 
   render() {
-    const { isLoading, yearValue, monthValue } = this.state;
+    const { yearValue, monthValue } = this.state;
+    const { allPOs, allPOsLoading } = this.props;
     return (
       <div
         style={{
@@ -114,7 +110,7 @@ class POGridView extends Component {
           width: '100%'
         }}
       >
-        {isLoading ? (
+        {allPOsLoading ? (
           <div
             style={{
               display: 'flex',
@@ -136,7 +132,7 @@ class POGridView extends Component {
               title="PO Entry"
               columns={allColumns}
               style={{ marginBottom: 10 }}
-              data={this.state.data}
+              data={allPOs}
               actions={[
                 {
                   icon: PictureAsPdfIcon,
@@ -170,6 +166,10 @@ class POGridView extends Component {
 }
 
 function mapStateToProps(state) {
-  return {};
+  const { allPOsLoading, allPOs } = state.po;
+  return {
+    allPOsLoading,
+    allPOs
+  };
 }
 export default connect(mapStateToProps)(POGridView);

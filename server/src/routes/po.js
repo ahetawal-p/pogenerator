@@ -3,7 +3,7 @@
 import express from 'express';
 import passport from 'passport';
 import Mongoose from 'mongoose';
-import * as moment from 'moment';
+import moment from 'moment';
 
 import POModel from '../model/po';
 
@@ -32,6 +32,9 @@ router.post(
         year,
         month
       } = req.body;
+
+      const createdOnDate = moment(createdOn);
+      const customPONumber = `Localize_${vendorName}_${createdOnDate.year()}${createdOnDate.month()}_${Mongoose.Types.ObjectId()}`;
       const model = new POModel({
         createdBy: req.user.email,
         createdOn,
@@ -47,10 +50,10 @@ router.post(
         vendorCost,
         currency,
         paymentStatus,
-        poNumber: poNumber || Mongoose.Types.ObjectId()
+        poNumber: customPONumber
       });
       const upsertData = model.toObject();
-      // delete upsertData.poNumber;
+      delete upsertData._id;
 
       await POModel.findOneAndUpdate({ poNumber }, upsertData, {
         upsert: true,
@@ -61,13 +64,13 @@ router.post(
       const startDate = moment([year, month - 1]);
       // Clone the value before .endOf()
       const endDate = moment(startDate).endOf('month');
-      const allPoEntry = POModel.find({
+      const allPOs = await POModel.find({
         createdOn: {
           $gte: startDate,
           $lte: endDate
         }
       });
-      return res.status(200).send({ allPoEntry });
+      return res.status(200).send({ allPOs });
     } catch (error) {
       return next(error);
     }
@@ -83,13 +86,14 @@ router.get(
       const startDate = moment([year, month - 1]);
       // Clone the value before .endOf()
       const endDate = moment(startDate).endOf('month');
-      const allPoEntry = POModel.find({
+      const allPOs = await POModel.find({
         createdOn: {
           $gte: startDate,
           $lte: endDate
         }
       });
-      return res.status(200).send({ allPoEntry });
+      // console.log(allPoEntry);
+      return res.status(200).send({ allPOs });
     } catch (error) {
       return nextError(error);
     }

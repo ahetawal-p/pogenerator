@@ -1,5 +1,4 @@
 /* eslint-disable no-underscore-dangle */
-import { reset } from 'redux-form';
 import * as types from './POTypes';
 import * as poService from '../service/POService';
 import * as alertActions from './AlertAction';
@@ -17,11 +16,10 @@ export function createPO(values) {
     })
       .then(() => {
         history.push('/');
-        dispatch(reset('event'));
-        if (values._id) {
-          dispatch(alertActions.info('Event upated !!'));
+        if (values.poNumber) {
+          dispatch(alertActions.info('PO upated !!'));
         } else {
-          dispatch(alertActions.success('Event created successfully !'));
+          dispatch(alertActions.success('PO created successfully !'));
         }
       })
       .catch(error => {

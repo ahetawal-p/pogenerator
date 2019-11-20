@@ -15,7 +15,7 @@ const POSchema = new Schema(
     projectName: { type: String, required: true },
     localizePM: { type: String, required: true },
     clientName: { type: String },
-    clientPM: { type: Number, required: true },
+    clientPM: { type: String, required: true },
     vendorName: { type: String, required: true },
     vendorMailId: { type: String, required: true },
     workType: { type: String, required: true },
@@ -26,7 +26,7 @@ const POSchema = new Schema(
     paymentStatus: { type: String, required: true },
     isActive: { type: Boolean, required: true, default: true }
   },
-  { timestamps: { createdAt: 'systemCreateOn', updatedAt: 'modifiedOn' } }
+  { timestamps: { createdAt: 'systemCreatedOn', updatedAt: 'modifiedOn' } }
 );
 const POModel = mongoose.model('poentry', POSchema);
 
