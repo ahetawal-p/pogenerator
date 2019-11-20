@@ -32,7 +32,7 @@ export const editableFields = [
     'wordCount',
     'vendorCost',
     'currency',
-    'status'
+    'paymentStatus'
 ]
 
 export const readableFields = [

@@ -1,7 +1,7 @@
 import * as types from './UserActionTypes';
 import * as userService from '../service/UserService';
 import * as alertActions from './AlertAction';
-import * as eventActions from './EventAction';
+import * as poActions from './POAction';
 
 import { history } from '../helpers';
 
@@ -13,7 +13,7 @@ export function login(values) {
     })
       .then(() => {
         history.push('/');
-        dispatch(eventActions.getEventCount());
+        dispatch(poActions.getAllPOs());
       })
       .catch(error => {
         console.error(error);

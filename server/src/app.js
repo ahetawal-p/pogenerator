@@ -9,7 +9,7 @@ import path from 'path';
 import cookieParser from 'cookie-parser';
 import mongoose from 'mongoose';
 import usersRouter from './routes/users';
-import eventRouter from './routes/event';
+import poRouter from './routes/po';
 import Authentication from './auth/authentication';
 
 mongoose.Promise = global.Promise;
@@ -54,7 +54,18 @@ export default class App {
   configureRoutes() {
     const expressApp = this.express;
 
-    expressApp.use('/event', eventRouter);
+    const router = express.Router();
+    router.get('/cities', (req, res) => {
+      const cities = [
+        { name: 'New York City', population: 8175133 },
+        { name: 'Los Angeles', population: 3792621 },
+        { name: 'Chicago', population: 2695598 }
+      ];
+      res.json(cities);
+    });
+
+    expressApp.use(router);
+    expressApp.use('/po', poRouter);
     expressApp.use('/user', usersRouter);
     const staticFiles = express.static(
       path.join(__dirname, '../../client/build')

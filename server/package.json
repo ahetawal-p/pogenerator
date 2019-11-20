@@ -11,7 +11,7 @@
     "build-babel": "mkdir -p build && babel -d ./build ./src -s",
     "build": "npm run clean && npm run build-babel",
     "start": "node ./build/index.js",
-    "dev": "nodemon ./src/index.js --exec babel-node",
+    "dev": "nodemon --inspect ./src/index.js --exec babel-node",
     "lint": "eslint ./src"
   },
   "dependencies": {
@@ -32,7 +32,8 @@
     "passport": "^0.4.0",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
-    "rimraf": "^2.6.2"
+    "rimraf": "^2.6.2",
+    "moment": "^2.24.0"
   },
   "devDependencies": {
     "eslint": "^5.16.0",

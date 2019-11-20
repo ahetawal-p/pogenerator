@@ -1,4 +1,4 @@
-import * as type from '../actions/EventTypes';
+import * as type from '../actions/POTypes';
 import { LOGOUT } from '../actions/UserActionTypes';
 
 const initialState = {
@@ -22,24 +22,16 @@ export default function reducer(state = initialState, action) {
       };
     case type.CREATE_UPDATE_FAILURE:
       return {};
-    case type.EVENT_COUNT_REQUEST:
-      return {};
-    case type.EVENT_COUNT_SUCCESS:
-      return { ...state, eventCount: action.response.eventCount };
-    case type.EVENT_COUNT_FAILURE:
-      return initialState;
-    case type.ALL_EVENTS_REQUEST:
+    case type.ALL_POS_REQUEST:
       return { ...state, allEventsLoading: true };
-    case type.ALL_EVENTS_SUCCESS:
+    case type.ALL_POS_SUCCESS:
       return {
         ...state,
         allEvents: action.response.allEvents,
         allEventsLoading: false
       };
-    case type.ALL_EVENTS_FAILURE:
+    case type.ALL_POS_FAILURE:
       return { ...state, allEventsLoading: false };
-    case type.EDIT_ADMIN_EVENT:
-      return { ...state, editEvent: action.editEvent };
     case LOGOUT:
       return initialState;
     default:
