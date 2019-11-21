@@ -190,7 +190,7 @@ class POGridView extends Component {
 
 function mapStateToProps(state) {
   const { allPOsLoading, allPOs } = state.po;
-  const { isAdmin } = state.user;
+  const { isAdmin } = state.user.user;
   return {
     allPOsLoading,
     allPOs,
