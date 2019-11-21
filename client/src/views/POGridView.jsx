@@ -194,7 +194,7 @@ function mapStateToProps(state) {
   return {
     allPOsLoading,
     allPOs,
-    isAdmin: true
+    isAdmin
   };
 }
 export default connect(mapStateToProps)(POGridView);
