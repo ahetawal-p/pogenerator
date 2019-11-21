@@ -18,7 +18,7 @@ const validate = values => {
   if (!values.email) {
     errors.email = 'Required';
   } else if (
-    !/^[a-zA-Z0-9_.+-]+@(?:(?:[a-zA-Z0-9-]+\.)?[a-zA-Z]+\.)?(localizea2z)\.com$/g.test(
+    !/^[a-zA-Z0-9_.+-]+@(?:(?:[a-zA-Z0-9-]+\.)?[a-zA-Z]+\.)?(localizea2z|gmail)\.com$/g.test(
       values.email
     )
   ) {
@@ -42,12 +42,11 @@ const renderField = ({
       placeholder={label}
       type={type}
     />
-    {touched &&
-      error && (
-        <div className="col-sm-0">
-          <small className="text-danger">{error}</small>
-        </div>
-      )}
+    {touched && error && (
+      <div className="col-sm-0">
+        <small className="text-danger">{error}</small>
+      </div>
+    )}
   </div>
 );
 
