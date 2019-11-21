@@ -40,8 +40,9 @@ class POGridView extends Component {
 
   createOrUpdatePO = newData => {
     const inValids = [];
+    const { isAdmin } = this.props;
     editableFields.forEach(item => {
-      if (!newData[item]) {
+      if (!newData[item] && item !== 'paymentStatus') {
         inValids.push(item);
       }
     });
@@ -56,7 +57,7 @@ class POGridView extends Component {
     dispatch(poActions.createPO(newData));
   };
 
-  addNewEntry = newData => {
+  addNewEntry = async newData => {
     this.createOrUpdatePO(newData);
   };
 

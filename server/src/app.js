@@ -49,6 +49,7 @@ export default class App {
       path.join(__dirname, '../../client/build')
     );
     expressApp.use(staticFiles);
+    expressApp.set('port', this.port);
   }
 
   configureRoutes() {

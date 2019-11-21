@@ -39,7 +39,11 @@ export function register(values) {
     })
       .then(() => {
         history.push('/login');
-        dispatch(alertActions.success('Registration successful'));
+        dispatch(
+          alertActions.info(
+            'Registration successful. Dont forget to check your email for registration confirmation.'
+          )
+        );
       })
       .catch(error => {
         console.error(error);

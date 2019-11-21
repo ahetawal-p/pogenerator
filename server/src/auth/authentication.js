@@ -5,6 +5,7 @@
 import Passport from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
 import { Strategy as JWTstrategy, ExtractJwt } from 'passport-jwt';
+import crypto from 'crypto';
 
 import UserModel from '../model/user';
 
@@ -15,6 +16,14 @@ export default class Authentication {
   constructor() {
     console.log('Authentication Initialization.');
     this.passport = Passport;
+  }
+
+  generateRandomValueHex() {
+    // eslint-disable-next-line implicit-arrow-linebreak
+    return crypto
+      .randomBytes(Math.ceil(12 / 2))
+      .toString('hex') // convert to hexadecimal format
+      .slice(0, 12); // return required number of characters
   }
 
   async _signUpStrategy(request, email, password, done) {
@@ -30,7 +39,8 @@ export default class Authentication {
         password,
         firstName,
         lastName,
-        isAdmin
+        isAdmin,
+        userToken: this.generateRandomValueHex()
       });
       // Send the user information to the next middleware
       return done(null, user);
@@ -51,6 +61,13 @@ export default class Authentication {
           message: 'User not found'
         });
       }
+      if (!user.isVerified) {
+        // If the user isn't verified through email,
+        return done(null, false, {
+          message: 'User not verified'
+        });
+      }
+
       // Validate password and make sure it matches with the corresponding hash stored in the database
       // If the passwords match, it returns a value of true.
       const validate = await user.isValidPassword(password);

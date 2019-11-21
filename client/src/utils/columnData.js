@@ -109,7 +109,6 @@ export function getAllColumns(isAdmin) {
     }
   ];
   if (isAdmin) {
-    allColumns[0] = { title: 'PO Number', field: readableFields[0] };
     allColumns.splice(3, 0, {
       title: 'Payment Status',
       field: editableFields[12]

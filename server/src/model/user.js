@@ -5,19 +5,25 @@ import bcrypt from 'bcrypt';
 
 const { Schema } = mongoose;
 
-const UserSchema = new Schema({
-  email: {
-    type: String,
-    unique: true,
-    required: true,
-    index: true
+const UserSchema = new Schema(
+  {
+    email: {
+      type: String,
+      unique: true,
+      required: true,
+      index: true
+    },
+    password: { type: String, required: true },
+    firstName: { type: String, required: true },
+    lastName: { type: String, required: true },
+    isAdmin: { type: Boolean, default: false },
+    userToken: { type: String, required: true, unique: true },
+    isVerified: { type: Boolean, default: false }
   },
-  password: { type: String, required: true },
-  firstName: { type: String, required: true },
-  lastName: { type: String, required: true },
-  isAdmin: { type: Boolean, default: false },
-  createdDate: { type: Date, default: Date.now }
-});
+  {
+    timestamps: true
+  }
+);
 
 // This is called a pre-hook, before the user information is saved in the database
 // this function will be called, we'll get the plain text password, hash it and store it.
