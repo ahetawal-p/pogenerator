@@ -29,6 +29,11 @@ export default function reducer(state = initialState, action) {
       };
     case type.ALL_POS_FAILURE:
       return { ...state, allPOsLoading: false };
+    case type.DELETE_PO_SUCCESS:
+      return {
+        ...state,
+        allPOs: action.response.allPOs
+      };
     case LOGOUT:
       return initialState;
     default:

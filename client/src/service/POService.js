@@ -22,3 +22,14 @@ export function getAllPos(paginateParams) {
   return fetch(`/po${queryString}`, requestOptions).then(handleResponse);
   // return Promise.resolve({ allPOs: sampleData });
 }
+
+export function deletePO(poNumber, dateParams) {
+  const requestOptions = {
+    method: 'DELETE',
+    headers: authHeader()
+  };
+  const queryString = objToQueryString(dateParams);
+  return fetch(`/po/${poNumber}${queryString}`, requestOptions).then(
+    handleResponse
+  );
+}

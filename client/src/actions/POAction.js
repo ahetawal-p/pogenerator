@@ -37,8 +37,31 @@ export function getAllPOs(params) {
         types.ALL_POS_FAILURE
       ],
       callAPI: poService.getAllPos(params)
-    }).catch(error => {
-      console.error(error);
-    });
+    })
+      .then(() => {
+        dispatch(alertActions.clear());
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  };
+}
+
+export function deletePO(poNumber, dateParams) {
+  return dispatch => {
+    dispatch({
+      types: [
+        types.DELETE_PO_REQUEST,
+        types.DELETE_PO_SUCCESS,
+        types.DELETE_PO_FAILURE
+      ],
+      callAPI: poService.deletePO(poNumber, dateParams)
+    })
+      .then(() => {
+        dispatch(alertActions.clear());
+      })
+      .catch(error => {
+        console.error(error);
+      });
   };
 }

@@ -14,14 +14,12 @@ import {
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
 import FilterView from './FilterView';
-import { getPOData } from '../service/getPOData';
 import * as poActions from '../actions/POAction';
 import * as userActions from '../actions/UserAction';
 import localizeImage from '../pdf/localizeImage';
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
-const wait = ms => new Promise(r => setTimeout(r, ms));
 const allFields = [...editableFields, ...readableFields];
 const today = new Date();
 
@@ -67,11 +65,14 @@ class POGridView extends Component {
   };
 
   deleteEntry = async oldData => {
-    await wait(1000);
-    let data = this.state.data;
-    const index = data.indexOf(oldData);
-    data.splice(index, 1);
-    this.setState({ data });
+    const { yearValue, monthValue } = this.state;
+    const { dispatch } = this.props;
+    dispatch(
+      poActions.deletePO(oldData.poNumber, {
+        year: yearValue,
+        month: monthValue + 1
+      })
+    );
   };
 
   generatePOPDF = (event, rowData) => {
@@ -89,17 +90,13 @@ class POGridView extends Component {
     pdfMake.createPdf(getDocDefinition(templateData)).download();
   };
 
-  onLookup = async (year, month) => {
+  onLookup = (year, month) => {
+    const { dispatch } = this.props;
     this.setState({
-      isLoading: true,
       yearValue: year,
       monthValue: month
     });
-    const data = await getPOData(year, month + 1);
-    this.setState({
-      data,
-      isLoading: false
-    });
+    dispatch(poActions.getAllPOs({ year, month: month + 1 }));
   };
 
   onLogout = () => {
@@ -196,7 +193,7 @@ function mapStateToProps(state) {
   return {
     allPOsLoading,
     allPOs,
-    isAdmin
+    isAdmin: true
   };
 }
 export default connect(mapStateToProps)(POGridView);
