@@ -14,7 +14,6 @@ const ADMIN_USER_PASSWORD = process.env.ADMIN_USER_PASSWORD || 'test1234';
 
 export default class Authentication {
   constructor() {
-    console.log('Authentication Initialization.');
     this.passport = Passport;
   }
 
@@ -40,6 +39,7 @@ export default class Authentication {
         firstName,
         lastName,
         isAdmin,
+        isVerified: !!isAdmin,
         userToken: this.generateRandomValueHex()
       });
       // Send the user information to the next middleware

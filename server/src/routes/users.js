@@ -58,6 +58,7 @@ async function sendConfirmationEmail(req) {
     html: getEmailTemplate(req) // html body
   });
   if (hostname === 'localhost') {
+    // eslint-disable-next-line no-console
     console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
   }
 }
