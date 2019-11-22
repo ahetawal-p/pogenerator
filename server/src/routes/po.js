@@ -19,7 +19,7 @@ async function getAllPOs(year, month) {
       $lte: endDate
     },
     isActive: true
-  });
+  }).sort({ createdOn: 'descending' });
   return allPOs;
 }
 
@@ -48,7 +48,9 @@ router.post(
       } = req.body;
 
       const createdOnDate = moment(createdOn);
-      const customPONumber = `Localize_${vendorName}_${createdOnDate.year()}${createdOnDate.month()}_${Mongoose.Types.ObjectId()}`;
+      // eslint-disable-next-line operator-linebreak
+      const customPONumber = `Localize_${vendorName}_${createdOnDate.year()}${createdOnDate.month() +
+        1}_${Mongoose.Types.ObjectId()}`;
       const model = new POModel({
         createdBy: req.user.email,
         createdOn,

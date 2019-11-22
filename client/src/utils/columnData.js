@@ -88,7 +88,7 @@ export function getAllColumns(isAdmin) {
     },
     { title: 'Language', field: editableFields[8] },
     { title: 'Word Count', field: editableFields[9], type: 'numeric' },
-    { title: 'Cost for Vendor', field: editableFields[10] },
+    { title: 'Cost for Vendor', field: editableFields[10], type: 'numeric' },
     {
       title: 'Currency',
       field: editableFields[11],
