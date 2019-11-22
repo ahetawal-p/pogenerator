@@ -18,7 +18,7 @@ const validate = values => {
   if (!values.email) {
     errors.email = 'Required';
   } else if (
-    !/^[a-zA-Z0-9_.+-]+@(?:(?:[a-zA-Z0-9-]+\.)?[a-zA-Z]+\.)?(localizea2z|gmail)\.com$/g.test(
+    !/^[a-zA-Z0-9_.+-]+@(?:(?:[a-zA-Z0-9-]+\.)?[a-zA-Z]+\.)?(localizea2z)\.com$/g.test(
       values.email
     )
   ) {
