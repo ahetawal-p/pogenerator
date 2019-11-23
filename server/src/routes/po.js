@@ -2,10 +2,9 @@
 /* eslint-disable comma-dangle */
 import express from 'express';
 import passport from 'passport';
-import Mongoose from 'mongoose';
 import moment from 'moment';
 
-import POModel from '../model/po';
+import POModel, { counter } from '../model/po';
 
 const router = express.Router();
 
@@ -47,10 +46,16 @@ router.post(
         month
       } = req.body;
 
+      const countertest = await counter.findOneAndUpdate(
+        { _id: 'counterId' },
+        { $set: { _id: 'counterId' }, $inc: { seq: 1 } },
+        { upsert: true, new: true, runValidators: true }
+      );
+
       const createdOnDate = moment(createdOn);
       // eslint-disable-next-line operator-linebreak
       const customPONumber = `Localize_${vendorName}_${createdOnDate.year()}${createdOnDate.month() +
-        1}_${Mongoose.Types.ObjectId()}`;
+        1}_${countertest.seq}`;
       const model = new POModel({
         createdBy: req.user.email,
         createdOn,

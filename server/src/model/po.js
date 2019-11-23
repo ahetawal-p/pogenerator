@@ -2,6 +2,13 @@
 import mongoose from 'mongoose';
 
 const { Schema } = mongoose;
+
+const CounterSchema = Schema({
+  _id: { type: String, required: true },
+  seq: { type: Number, default: 0 }
+});
+export const counter = mongoose.model('counter', CounterSchema);
+
 const POSchema = new Schema(
   {
     createdOn: { type: Date, required: true },

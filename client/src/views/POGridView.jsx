@@ -3,6 +3,7 @@ import MaterialTable from 'material-table';
 import { connect } from 'react-redux';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import PictureAsPdfIcon from '@material-ui/icons/PictureAsPdf';
+import moment from 'moment';
 import getDocDefinition from '../pdf/pdfdef';
 import {
   workTypes,
@@ -85,6 +86,9 @@ class POGridView extends Component {
       }
       if (item === 'currency') {
         currentData = currencyTypes[currentData];
+      }
+      if (item === 'createdOn') {
+        currentData = moment(currentData).format('DD/MM/YYYY');
       }
       templateData[item] = currentData;
     });
