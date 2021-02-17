@@ -24,8 +24,8 @@ export default class App {
   }
 
   initialize() {
-    mongoose.connect(this.db, { useNewUrlParser: true, useCreateIndex: true });
-    mongoose.connection.on('error', error => console.log(error));
+ //   mongoose.connect(this.db, { useNewUrlParser: true, useCreateIndex: true });
+ //   mongoose.connection.on('error', error => console.log(error));
     mongoose.set('debug', true);
 
     this.auth.initialize();
